@@ -1,0 +1,12 @@
+name = "koronri-admin"
+main = "worker.js"
+compatibility_date = "2024-11-01"
+
+# 배포 순서
+#   1) npm i -g wrangler            (또는 npx 로 실행)
+#   2) npx wrangler login
+#   3) npx wrangler secret put GITHUB_TOKEN     ← Fine-grained PAT (Contents: R/W)
+#   4) npx wrangler secret put ADMIN_PASSWORD   ← 관리자용 비밀번호
+#   5) npx wrangler deploy
+# 배포되면 https://koronri-admin.<계정>.workers.dev 형태의 URL이 나온다.
+# 그 URL을 admin.html 의 WORKER_URL 상수에 넣으면 비밀번호 방식으로 전환된다.

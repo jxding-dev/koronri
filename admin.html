@@ -71,6 +71,34 @@
         <p id="token-status" class="admin-status"></p>
       </section>
 
+      <!-- 비밀번호 게이트 (Worker 방식일 때만 사용) -->
+      <section id="pass-gate" class="measure" hidden>
+        <div class="admin-note">
+          <p style="margin-bottom: 0.6rem">
+            <strong>비밀번호 입력</strong> — 저장하려면 관리자 비밀번호가 필요합니다.
+          </p>
+          <p style="font-size: 0.82rem">
+            비밀번호는 이 브라우저에만 저장되며, 저장 시에만 서버로 전송됩니다.
+          </p>
+        </div>
+        <div class="admin-field">
+          <label for="pass-input">관리자 비밀번호</label>
+          <input
+            id="pass-input"
+            class="admin-input"
+            type="password"
+            autocomplete="off"
+            placeholder="비밀번호"
+          />
+        </div>
+        <div class="btn-row">
+          <button id="pass-save" type="button" class="btn btn--primary">
+            확인 후 불러오기
+          </button>
+        </div>
+        <p id="pass-status" class="admin-status"></p>
+      </section>
+
       <!-- 편집기 -->
       <section id="editor" class="measure" hidden>
         <div class="admin-field">
@@ -136,16 +164,27 @@
 
     <script>
       (function () {
+        // ── 저장 방식 설정 ─────────────────────────────────────────
+        // WORKER_URL 을 비워 두면: GitHub 토큰 방식 (기존)
+        // Cloudflare Worker 배포 후 그 URL 을 넣으면: 비밀번호 방식
+        //   예) 'https://koronri-admin.<계정>.workers.dev'  (server/README.md 참고)
+        var WORKER_URL = '';
+        // ───────────────────────────────────────────────────────────
+
         var OWNER = 'jxding-dev';
         var REPO = 'commission';
         var BRANCH = 'main';
         var PATH = 'data/pricing.json';
         var TOKEN_KEY = 'koronri_gh_pat';
+        var PASS_KEY = 'koronri_admin_pass';
         var API =
           'https://api.github.com/repos/' + OWNER + '/' + REPO + '/contents/';
+        var USE_WORKER = !!WORKER_URL;
 
         var $ = function (id) { return document.getElementById(id); };
         var currentSha = null;
+
+        function getPass() { return localStorage.getItem(PASS_KEY); }
 
         function b64encode(str) { return btoa(unescape(encodeURIComponent(str))); }
         function b64decode(b64) { return decodeURIComponent(escape(atob(b64.replace(/\s/g, '')))); }
@@ -199,9 +238,8 @@
         }
 
         function uploadImage(file, box) {
-          var token = getToken();
           var upEl = box.querySelector('.cat-upstatus');
-          if (!token) { showGate(); return; }
+          if (USE_WORKER ? !getPass() : !getToken()) { showGate(); return; }
           if (!file.type || file.type.indexOf('image/') !== 0) {
             upEl.textContent = '이미지 파일만 업로드할 수 있습니다.';
             return;
@@ -220,23 +258,35 @@
               canvas.width = w; canvas.height = h;
               canvas.getContext('2d').drawImage(img, 0, 0, w, h);
               var b64 = canvas.toDataURL('image/jpeg', 0.85).split(',')[1];
-              var path = 'data/images/upload-' + Date.now() + '.jpg';
               upEl.textContent = '업로드 중…';
-              fetch(API + path, {
-                method: 'PUT',
-                headers: ghHeaders(token),
-                body: JSON.stringify({
-                  message: 'chore(admin): 샘플 이미지 업로드',
-                  content: b64,
-                  branch: BRANCH,
-                }),
-              })
-                .then(function (r) {
-                  if (!r.ok) return r.json().then(function (j) { throw new Error(j.message || 'HTTP ' + r.status); });
-                  return r.json();
-                })
-                .then(function () {
-                  var url = './' + path;
+              var upReq = USE_WORKER
+                ? fetch(WORKER_URL + '/upload', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password: getPass(), contentBase64: b64 }),
+                  }).then(function (r) {
+                    return r.json().then(function (j) {
+                      if (!r.ok || !j.ok) throw new Error(j.error || 'HTTP ' + r.status);
+                      return j.path;
+                    });
+                  })
+                : (function () {
+                    var path = 'data/images/upload-' + Date.now() + '.jpg';
+                    return fetch(API + path, {
+                      method: 'PUT',
+                      headers: ghHeaders(getToken()),
+                      body: JSON.stringify({
+                        message: 'chore(admin): 샘플 이미지 업로드',
+                        content: b64,
+                        branch: BRANCH,
+                      }),
+                    }).then(function (r) {
+                      if (!r.ok) return r.json().then(function (j) { throw new Error(j.message || 'HTTP ' + r.status); });
+                      return r.json().then(function () { return './' + path; });
+                    });
+                  })();
+              upReq
+                .then(function (url) {
                   box.querySelector('.cat-image').value = url;
                   setPreview(box, url);
                   upEl.textContent = '업로드 완료 · 아래 [저장]을 눌러 반영하세요';
@@ -371,10 +421,35 @@
         }
 
         // ---------- GitHub API ----------
-        function showGate() { $('token-gate').hidden = false; $('editor').hidden = true; }
-        function showEditor() { $('token-gate').hidden = true; $('editor').hidden = false; }
+        function showGate() {
+          $('token-gate').hidden = USE_WORKER;
+          $('pass-gate').hidden = !USE_WORKER;
+          $('editor').hidden = true;
+        }
+        function showEditor() {
+          $('token-gate').hidden = true;
+          $('pass-gate').hidden = true;
+          $('editor').hidden = false;
+        }
 
         function loadData() {
+          // 비밀번호(Worker) 방식: 인증 없이 공개 데이터를 읽어 폼을 채운다
+          if (USE_WORKER) {
+            if (!getPass()) { showGate(); return; }
+            status($('status'), '불러오는 중…', null);
+            fetch('./data/pricing.json?t=' + Date.now())
+              .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+              .then(function (json) {
+                renderForm(json);
+                showEditor();
+                status($('status'), '', null);
+              })
+              .catch(function (e) {
+                showEditor();
+                status($('status'), '불러오기 실패: ' + e.message, 'err');
+              });
+            return;
+          }
           var token = getToken();
           if (!token) { showGate(); return; }
           status($('status'), '불러오는 중…', null);
@@ -402,6 +477,28 @@
         }
 
         function save() {
+          // 비밀번호(Worker) 방식: Worker 에 payload 를 POST → Worker 가 커밋
+          if (USE_WORKER) {
+            if (!getPass()) { showGate(); return; }
+            var payload = JSON.stringify(collectData(), null, 2) + '\n';
+            status($('status'), '저장 중…', null);
+            fetch(WORKER_URL + '/save', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ password: getPass(), content: payload }),
+            })
+              .then(function (r) { return r.json().then(function (j) { return { r: r, j: j }; }); })
+              .then(function (res) {
+                if (res.r.status === 401) throw new Error('AUTH');
+                if (!res.r.ok || !res.j.ok) throw new Error(res.j.error || 'HTTP ' + res.r.status);
+                status($('status'), '저장되었습니다. 약 1~2분 뒤 사이트에 반영됩니다.', 'ok');
+              })
+              .catch(function (e) {
+                if (e.message === 'AUTH') status($('status'), '비밀번호가 올바르지 않습니다. [비밀번호 지우기] 후 다시 입력해 주세요.', 'err');
+                else status($('status'), '저장 실패: ' + e.message, 'err');
+              });
+            return;
+          }
           var token = getToken();
           if (!token) { showGate(); return; }
           var content = b64encode(JSON.stringify(collectData(), null, 2) + '\n');
@@ -441,6 +538,26 @@
           $('token-input').value = '';
           loadData();
         });
+        $('pass-save').addEventListener('click', function () {
+          var p = $('pass-input').value;
+          if (!p) { status($('pass-status'), '비밀번호를 입력해 주세요.', 'err'); return; }
+          status($('pass-status'), '확인 중…', null);
+          fetch(WORKER_URL + '/verify', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ password: p }),
+          })
+            .then(function (r) {
+              if (r.ok) {
+                localStorage.setItem(PASS_KEY, p);
+                $('pass-input').value = '';
+                loadData();
+              } else {
+                status($('pass-status'), '비밀번호가 올바르지 않습니다.', 'err');
+              }
+            })
+            .catch(function (e) { status($('pass-status'), '확인 실패: ' + e.message, 'err'); });
+        });
         $('save').addEventListener('click', save);
         $('reload').addEventListener('click', loadData);
         $('add-category').addEventListener('click', function () {
@@ -451,10 +568,17 @@
         });
         $('clear-token').addEventListener('click', function () {
           localStorage.removeItem(TOKEN_KEY);
+          localStorage.removeItem(PASS_KEY);
           currentSha = null;
           showGate();
-          status($('token-status'), '토큰을 지웠습니다.', null);
+          if (USE_WORKER) status($('pass-status'), '비밀번호를 지웠습니다.', null);
+          else status($('token-status'), '토큰을 지웠습니다.', null);
         });
+
+        // 모드에 따라 안내 문구/버튼 라벨 조정
+        if (USE_WORKER) {
+          $('clear-token').textContent = '비밀번호 지우기';
+        }
 
         loadData();
       })();

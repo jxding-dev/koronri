@@ -43,34 +43,23 @@ npm run preview      # 빌드 결과 미리보기
 
 빌드 결과 `dist/`에는 모든 페이지 · 이미지 · `data/` · `404.html`이 포함됩니다.
 
-## 관리자 페이지 (GitHub 기반 CMS)
+## 관리자 페이지 (`admin.html`)
 
-의뢰인이 코드 없이 사이트를 갱신할 수 있는 `admin.html`입니다.
+의뢰인이 코드 없이 **접수 상태 · 공지(한·일) · 가격·옵션(한·일) · 샘플 이미지**를
+수정하는 페이지입니다. 저장하면 GitHub에 커밋되고 Actions가 1~2분 내 재배포합니다.
+(검색 노출 방지를 위해 `noindex` 처리)
 
-**관리 항목**
+인증은 두 방식 중 하나로 동작합니다.
 
-1. **접수 상태** — 오픈 / 마감 / 준비 중 → 모든 페이지 상단 배너 + 상태 배지에 반영
-2. **공지 배너** — 한국어 · 일본어 문구 (비우면 숨김)
-3. **가격 · 옵션** — 카테고리/항목/옵션 추가 · 삭제 · 수정
-4. **샘플 이미지** — 카테고리별 이미지 URL 입력 또는 직접 업로드
-   (브라우저에서 리사이즈 후 저장소에 커밋)
+- **토큰 방식 (기본)** — 관리자가 GitHub 토큰을 한 번 입력하면 그 브라우저에만
+  저장됩니다. 발급 절차는 `admin.html` 화면 안에 단계별로 안내돼 있습니다.
+- **비밀번호 방식 (선택)** — Cloudflare Worker를 두어 토큰을 서버 secret으로 숨기고,
+  관리자는 **비밀번호만** 입력합니다. 설정은 [`server/README.md`](server/README.md)
+  참고. (`admin.html`의 `WORKER_URL` 한 줄로 전환)
 
-**동작 원리** — 관리자 페이지는 GitHub Contents API로 `data/pricing.json`을 직접
-수정(커밋)합니다. push가 아니라 API 커밋이므로, 저장하면 Actions가 재빌드하여
-1~2분 뒤 라이브에 반영됩니다.
-
-**사용 방법 (의뢰인)**
-
-1. GitHub에서 **Fine-grained Personal Access Token** 발급
-   - Repository access: `jxding-dev/commission`
-   - Permissions → **Contents: Read and write**
-2. `admin.html`에 접속해 토큰을 입력 (페이지 안에 단계별 안내 있음)
-3. 토큰은 **해당 브라우저의 localStorage에만 저장**되며 서버로 전송되지 않습니다.
-   `api.github.com`으로의 직접 HTTPS 호출에만 사용됩니다.
-
-> 🔐 보안: 토큰은 위 최소 권한(Contents R/W)으로만 발급하고, 필요 없어지면
-> GitHub에서 폐기(rotate)하세요. 토큰·비밀번호를 페이지 콘텐츠나 저장소에 절대
-> 넣지 마세요.
+> 🔐 토큰·비밀번호는 코드·저장소·문서·채팅에 절대 넣지 마세요. 오직 관리자 페이지
+> 입력창에만 입력합니다. 토큰은 최소 권한(Contents: Read/write)으로 발급하고,
+> 불필요해지면 GitHub에서 폐기(rotate)하세요.
 
 ## 파일 구조
 
@@ -91,9 +80,16 @@ npm run preview      # 빌드 결과 미리보기
 ├─ images/                 # 페이지 일러스트 (상대경로 참조)
 ├─ scripts/
 │  └─ postbuild.mjs        # MPA 링크 정리 + data/·404.html 복사
+├─ server/                 # (선택) 비밀번호 방식용 Cloudflare Worker — 배포 안 하면 미사용
+│  ├─ worker.js
+│  ├─ wrangler.toml
+│  └─ README.md            # 배포 가이드
 └─ .github/workflows/
    └─ deploy.yml           # GitHub Pages 자동 배포
 ```
+
+> `server/`는 사이트 빌드/배포(`dist/`)에 포함되지 않습니다. GitHub Pages에는
+> 영향이 없고, 비밀번호 방식을 쓸 때만 별도로 Cloudflare에 배포합니다.
 
 ## `data/pricing.json` 스키마
 
