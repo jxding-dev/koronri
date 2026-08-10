@@ -1454,9 +1454,9 @@ html[lang="ja"] :is(p, li, dd, dt, h1, h2, h3) {
 
 .price-row__thumb {
   flex: 0 0 auto;
-  width: 56px;
-  height: 56px;
-  border-radius: 10px;
+  width: clamp(88px, 24vw, 132px);
+  height: clamp(88px, 24vw, 132px);
+  border-radius: 16px;
   overflow: hidden;
   background: var(--color-surface-2);
   border: var(--border);
