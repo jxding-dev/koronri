@@ -238,6 +238,16 @@
               cats || '<p class="lede">준비 중입니다.</p>';
             document.getElementById('price-options').innerHTML =
               rows(data.options) || '<p class="lede">준비 중입니다.</p>';
+            // 이미지 URL이 잘못됐을 때 깨진 아이콘 대신 조용히 숨김
+            Array.prototype.forEach.call(
+              document.querySelectorAll('#price-categories img'),
+              function (im) {
+                im.addEventListener('error', function () {
+                  var f = im.closest('.price-row__thumb, .price-cat__frame');
+                  if (f) f.remove();
+                });
+              }
+            );
             if (data.updatedAt) {
               document.getElementById('price-updated').textContent =
                 '최종 업데이트 · ' + data.updatedAt;

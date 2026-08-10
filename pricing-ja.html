@@ -241,6 +241,16 @@
               cats || '<p class="lede">準備中です。</p>';
             document.getElementById('price-options').innerHTML =
               rows(data.options) || '<p class="lede">準備中です。</p>';
+            // 画像URLが不正なときは壊れたアイコンを出さず静かに非表示
+            Array.prototype.forEach.call(
+              document.querySelectorAll('#price-categories img'),
+              function (im) {
+                im.addEventListener('error', function () {
+                  var f = im.closest('.price-row__thumb, .price-cat__frame');
+                  if (f) f.remove();
+                });
+              }
+            );
             if (data.updatedAt) {
               document.getElementById('price-updated').textContent =
                 '最終更新 · ' + data.updatedAt;

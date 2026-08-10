@@ -19,9 +19,12 @@ const REPO = 'commission';
 const BRANCH = 'main';
 const PRICING_PATH = 'data/pricing.json';
 
-function corsHeaders(origin) {
+function corsHeaders(origin, env) {
+  // ALLOWED_ORIGIN secret 을 지정하면 그 출처만 허용(권장). 없으면 요청 출처를 반영.
+  var allow = (env && env.ALLOWED_ORIGIN) || origin || '*';
   return {
-    'Access-Control-Allow-Origin': origin || '*',
+    'Access-Control-Allow-Origin': allow,
+    Vary: 'Origin',
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type',
     'Access-Control-Max-Age': '86400',
@@ -55,7 +58,7 @@ function toB64(str) {
 export default {
   async fetch(request, env) {
     const origin = request.headers.get('Origin') || '';
-    const cors = corsHeaders(origin);
+    const cors = corsHeaders(origin, env);
 
     if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: cors });
     if (request.method !== 'POST') return reply({ error: 'method_not_allowed' }, 405, cors);

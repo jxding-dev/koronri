@@ -47,6 +47,15 @@ var WORKER_URL = 'https://koronri-admin.<계정>.workers.dev'; // 배포한 Work
   노출되지 않습니다. (이 폴더의 코드는 토큰을 담지 않습니다.)
 - 가격 데이터 읽기는 인증이 필요 없어 공개 `data/pricing.json`을 그대로 불러옵니다.
 
+> ⚠️ 이 Worker는 **공개 엔드포인트**입니다. 보호 수단은 비밀번호 하나이고 별도
+> 요청 제한(rate limit)은 없습니다. 반드시 다음을 지키세요.
+>
+> - **길고 추측 어려운 비밀번호**를 쓰세요(무작위 16자 이상 권장). 짧으면 무차별
+>   대입에 취약합니다.
+> - 원하면 출처를 좁힐 수 있습니다: `npx wrangler secret put ALLOWED_ORIGIN` 에
+>   `https://jxding-dev.github.io` 를 넣으면 그 출처의 브라우저 요청만 CORS 허용됩니다.
+>   (단, 서버-대-서버 호출은 CORS로 막히지 않으므로 근본 보호는 비밀번호 강도입니다.)
+
 ## 비밀번호·토큰 교체
 
 - 비밀번호 변경: `npx wrangler secret put ADMIN_PASSWORD` 다시 실행
