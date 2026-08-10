@@ -8,3 +8,6 @@ dist/
 Thumbs.db
 .vscode/
 .idea/
+
+# 내부 개발 도구 설정 (미리보기 서버 등)
+.claude/
