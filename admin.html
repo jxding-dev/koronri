@@ -227,18 +227,53 @@
           row.querySelector('.' + prefix + '-nameja').value = data.nameJa || '';
           row.querySelector('.' + prefix + '-price').value = data.price || '';
           row.querySelector('.' + prefix + '-priceja').value = data.priceJa || '';
-          row.querySelector('.admin-remove').addEventListener('click', function () { row.remove(); });
+          row.querySelector('.admin-remove').addEventListener('click', function () {
+            (row.closest('.admin-item') || row).remove();
+          });
           return row;
         }
 
-        function setPreview(box, url) {
-          var prev = box.querySelector('.cat-preview');
+        function setPreview(block, url) {
+          var prev = block.querySelector('.img-preview');
+          if (!prev) return;
           if (url) { prev.src = url; prev.hidden = false; }
           else { prev.hidden = true; }
         }
 
+        // 재사용 이미지 블록(카테고리·항목 공용). marker: 'cat' | 'item'
+        function makeImageBlock(url, marker) {
+          var wrap = document.createElement('div');
+          wrap.className = 'admin-catimg admin-catimg--' + marker;
+          wrap.innerHTML =
+            '<img class="img-preview" alt="미리보기" hidden>' +
+            '<div class="admin-catimg__controls">' +
+            '<input class="admin-input img-url" type="text" placeholder="이미지 URL (또는 업로드)">' +
+            '<label class="admin-addbtn admin-upload">이미지 업로드<input type="file" accept="image/*" class="img-file" hidden></label>' +
+            '<span class="img-upstatus admin-status"></span>' +
+            '</div>';
+          wrap.querySelector('.img-url').value = url || '';
+          setPreview(wrap, url || '');
+          wrap.querySelector('.img-url').addEventListener('input', function (e) {
+            setPreview(wrap, e.target.value.trim());
+          });
+          wrap.querySelector('.img-file').addEventListener('change', function (e) {
+            if (e.target.files && e.target.files[0]) uploadImage(e.target.files[0], wrap);
+          });
+          return wrap;
+        }
+
+        // 항목 = 이름/가격 행 + 개별 이미지 블록
+        function makeItem(data) {
+          data = data || {};
+          var wrap = document.createElement('div');
+          wrap.className = 'admin-item';
+          wrap.appendChild(makeRow(data, 'item'));
+          wrap.appendChild(makeImageBlock(data.image, 'item'));
+          return wrap;
+        }
+
         function uploadImage(file, box) {
-          var upEl = box.querySelector('.cat-upstatus');
+          var upEl = box.querySelector('.img-upstatus');
           if (USE_WORKER ? !getPass() : !getToken()) { showGate(); return; }
           if (!file.type || file.type.indexOf('image/') !== 0) {
             upEl.textContent = '이미지 파일만 업로드할 수 있습니다.';
@@ -287,7 +322,7 @@
                   })();
               upReq
                 .then(function (url) {
-                  box.querySelector('.cat-image').value = url;
+                  box.querySelector('.img-url').value = url;
                   setPreview(box, url);
                   upEl.textContent = '업로드 완료 · 아래 [저장]을 눌러 반영하세요';
                 })
@@ -316,29 +351,12 @@
           head.querySelector('.admin-remove').addEventListener('click', function () { box.remove(); });
           box.appendChild(head);
 
-          var imgWrap = document.createElement('div');
-          imgWrap.className = 'admin-catimg';
-          imgWrap.innerHTML =
-            '<img class="cat-preview" alt="미리보기" hidden>' +
-            '<div class="admin-catimg__controls">' +
-            '<input class="admin-input cat-image" type="text" placeholder="이미지 URL (또는 업로드)">' +
-            '<label class="admin-addbtn admin-upload">이미지 업로드<input type="file" accept="image/*" class="cat-file" hidden></label>' +
-            '<span class="cat-upstatus admin-status"></span>' +
-            '</div>';
-          imgWrap.querySelector('.cat-image').value = cat.image || '';
-          box.appendChild(imgWrap);
-          setPreview(box, cat.image || '');
-          imgWrap.querySelector('.cat-image').addEventListener('input', function (e) {
-            setPreview(box, e.target.value.trim());
-          });
-          imgWrap.querySelector('.cat-file').addEventListener('change', function (e) {
-            if (e.target.files && e.target.files[0]) uploadImage(e.target.files[0], box);
-          });
+          box.appendChild(makeImageBlock(cat.image, 'cat'));
 
           var items = document.createElement('div');
           items.className = 'items';
           (cat.items || []).forEach(function (it) {
-            items.appendChild(makeRow(it, 'item'));
+            items.appendChild(makeItem(it));
           });
           box.appendChild(items);
 
@@ -347,7 +365,7 @@
           addItem.className = 'admin-addbtn';
           addItem.textContent = '+ 항목 추가';
           addItem.addEventListener('click', function () {
-            items.appendChild(makeRow(null, 'item'));
+            items.appendChild(makeItem(null));
           });
           box.appendChild(addItem);
           return box;
@@ -382,17 +400,18 @@
               return {
                 name: box.querySelector('.cat-name').value.trim(),
                 nameJa: box.querySelector('.cat-nameja').value.trim(),
-                image: box.querySelector('.cat-image').value.trim(),
+                image: box.querySelector('.admin-catimg--cat .img-url').value.trim(),
                 items: [].map
-                  .call(box.querySelectorAll('.items .admin-row'), function (r) {
+                  .call(box.querySelectorAll('.items .admin-item'), function (el) {
                     return {
-                      name: r.querySelector('.item-name').value.trim(),
-                      nameJa: r.querySelector('.item-nameja').value.trim(),
-                      price: r.querySelector('.item-price').value.trim(),
-                      priceJa: r.querySelector('.item-priceja').value.trim(),
+                      name: el.querySelector('.item-name').value.trim(),
+                      nameJa: el.querySelector('.item-nameja').value.trim(),
+                      price: el.querySelector('.item-price').value.trim(),
+                      priceJa: el.querySelector('.item-priceja').value.trim(),
+                      image: el.querySelector('.admin-catimg--item .img-url').value.trim(),
                     };
                   })
-                  .filter(function (it) { return it.name || it.nameJa || it.price || it.priceJa; }),
+                  .filter(function (it) { return it.name || it.nameJa || it.price || it.priceJa || it.image; }),
               };
             }
           ).filter(function (c) { return c.name || c.nameJa || c.items.length || c.image; });

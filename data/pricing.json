@@ -15,25 +15,29 @@
           "name": "두상",
           "nameJa": "顔（ヘッド）",
           "price": "20,000원~",
-          "priceJa": "2,000円〜"
+          "priceJa": "2,000円〜",
+          "image": "./data/images/sample-koron.jpg"
         },
         {
           "name": "흉상",
           "nameJa": "バストアップ",
           "price": "30,000원~",
-          "priceJa": "3,000円〜"
+          "priceJa": "3,000円〜",
+          "image": "./data/images/sample-ronko.jpg"
         },
         {
           "name": "반신",
           "nameJa": "半身",
           "price": "45,000원~",
-          "priceJa": "4,500円〜"
+          "priceJa": "4,500円〜",
+          "image": "./data/images/sample-koko.jpg"
         },
         {
           "name": "전신",
           "nameJa": "全身",
           "price": "60,000원~",
-          "priceJa": "6,000円〜"
+          "priceJa": "6,000円〜",
+          "image": "./data/images/sample-ronron.jpg"
         }
       ]
     },

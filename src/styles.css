@@ -1446,15 +1446,32 @@ html[lang="ja"] :is(p, li, dd, dt, h1, h2, h3) {
 
 .price-row {
   display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 1.25rem;
+  align-items: center;
+  gap: 1rem;
   padding: 0.9rem 0.25rem;
   border-bottom: var(--border);
 }
 
+.price-row__thumb {
+  flex: 0 0 auto;
+  width: 56px;
+  height: 56px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--color-surface-2);
+  border: var(--border);
+}
+.price-row__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
 .price-row__name {
   color: var(--color-text);
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .price-row__price {
@@ -1462,6 +1479,7 @@ html[lang="ja"] :is(p, li, dd, dt, h1, h2, h3) {
   font-weight: 500;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
+  flex: 0 0 auto;
 }
 
 .price-updated {
@@ -1703,7 +1721,7 @@ html[lang="ja"] :is(p, li, dd, dt, h1, h2, h3) {
   display: grid;
   gap: 0.5rem;
 }
-.cat-preview {
+.img-preview {
   flex: 0 0 auto;
   width: 76px;
   height: 76px;
@@ -1716,6 +1734,26 @@ html[lang="ja"] :is(p, li, dd, dt, h1, h2, h3) {
   display: inline-block;
   text-align: center;
   justify-self: start;
+}
+
+/* 항목 카드 = 이름/가격 행 + 개별 이미지 블록 */
+.admin-item {
+  margin-top: 0.8rem;
+  padding: 0.55rem 0.7rem 0.75rem;
+  border: var(--border);
+  border-radius: 14px;
+  background: var(--color-bg);
+}
+.admin-item .admin-row {
+  margin-top: 0;
+}
+.admin-item .admin-catimg {
+  margin-top: 0.6rem;
+}
+/* 항목 이미지 미리보기는 조금 작게 */
+.admin-catimg--item .img-preview {
+  width: 56px;
+  height: 56px;
 }
 
 /* ============================================================
