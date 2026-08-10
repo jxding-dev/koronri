@@ -1,10 +1,10 @@
 {
   "updatedAt": "2026-08-10",
   "status": "PREPARING",
-  "announcement": "RRRRRRRRRRRR",
-  "announcementJa": "RRRRRRRRRRRRRRRRR",
-  "note": "아래 가격은 예시이며, 관리자 페이지에서 언제든 수정할 수 있습니다. 방송용은 ×2, 상업용은 별도 문의입니다.RRRRRRRR",
-  "noteJa": "以下の価格は例です。管理者ページでいつでも変更できます。放送用は×2、商業用は別途お問い合わせください。RRRRRRRRRRRR",
+  "announcement": "",
+  "announcementJa": "",
+  "note": "아래 가격은 예시이며, 관리자 페이지에서 언제든 수정할 수 있습니다. 방송용은 ×2, 상업용은 별도 문의입니다.",
+  "noteJa": "以下の価格は例です。管理者ページでいつでも変更できます。放送用は×2、商業用は別途お問い合わせください。",
   "categories": [
     {
       "name": "코론타입 · LD 풀채색",
@@ -14,7 +14,7 @@
         {
           "name": "두상",
           "nameJa": "顔（ヘッド）",
-          "price": "20,000원~RRRRR",
+          "price": "20,000원~",
           "priceJa": "2,000円〜",
           "image": "./data/images/sample-koron.jpg"
         },
