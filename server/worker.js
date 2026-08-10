@@ -15,7 +15,7 @@
 // ============================================================
 
 const OWNER = 'jxding-dev';
-const REPO = 'commission';
+const REPO = 'koronri';
 const BRANCH = 'main';
 const PRICING_PATH = 'data/pricing.json';
 

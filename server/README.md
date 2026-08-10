@@ -11,7 +11,7 @@
 ## 무엇이 필요한가
 
 - Cloudflare 계정 (무료)
-- GitHub Fine-grained PAT (Repository: `jxding-dev/commission`, Contents: Read/write)
+- GitHub Fine-grained PAT (Repository: `jxding-dev/koronri`, Contents: Read/write)
 - 관리자에게 알려줄 비밀번호(자유롭게 정함)
 
 ## 배포 방법

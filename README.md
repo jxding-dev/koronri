@@ -23,10 +23,10 @@ Vite + 순수 HTML/CSS/최소 Vanilla JS로 구성되며 프레임워크는 사�
 
 `main`에 push하면 GitHub Actions가 빌드 후 GitHub Pages에 자동 배포합니다.
 
-- 커미션: https://jxding-dev.github.io/commission/
-- 분양: https://jxding-dev.github.io/commission/adoption.html
-- 가격: https://jxding-dev.github.io/commission/pricing.html
-- 관리자: https://jxding-dev.github.io/commission/admin.html
+- 커미션: https://jxding-dev.github.io/koronri/
+- 분양: https://jxding-dev.github.io/koronri/adoption.html
+- 가격: https://jxding-dev.github.io/koronri/pricing.html
+- 관리자: https://jxding-dev.github.io/koronri/admin.html
 
 ## 실행 방법
 
