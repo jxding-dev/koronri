@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-08",
+  "updatedAt": "2026-08-10",
   "status": "PREPARING",
   "announcement": "",
   "announcementJa": "",
@@ -11,10 +11,30 @@
       "nameJa": "コロンタイプ・LDフルカラー",
       "image": "./data/images/sample-koron.jpg",
       "items": [
-        { "name": "두상", "nameJa": "顔（ヘッド）", "price": "20,000원~", "priceJa": "2,000円〜" },
-        { "name": "흉상", "nameJa": "バストアップ", "price": "30,000원~", "priceJa": "3,000円〜" },
-        { "name": "반신", "nameJa": "半身", "price": "45,000원~", "priceJa": "4,500円〜" },
-        { "name": "전신", "nameJa": "全身", "price": "60,000원~", "priceJa": "6,000円〜" }
+        {
+          "name": "두상",
+          "nameJa": "顔（ヘッド）",
+          "price": "20,000원~",
+          "priceJa": "2,000円〜"
+        },
+        {
+          "name": "흉상",
+          "nameJa": "バストアップ",
+          "price": "30,000원~",
+          "priceJa": "3,000円〜"
+        },
+        {
+          "name": "반신",
+          "nameJa": "半身",
+          "price": "45,000원~",
+          "priceJa": "4,500円〜"
+        },
+        {
+          "name": "전신",
+          "nameJa": "全身",
+          "price": "60,000원~",
+          "priceJa": "6,000円〜"
+        }
       ]
     },
     {
@@ -22,7 +42,12 @@
       "nameJa": "ロンコタイプ・SDフルカラー",
       "image": "./data/images/sample-ronko.jpg",
       "items": [
-        { "name": "전신", "nameJa": "全身", "price": "25,000원~", "priceJa": "2,500円〜" }
+        {
+          "name": "전신",
+          "nameJa": "全身",
+          "price": "25,000원~",
+          "priceJa": "2,500円〜"
+        }
       ]
     },
     {
@@ -30,8 +55,18 @@
       "nameJa": "ココタイプ・LDバーチャル",
       "image": "./data/images/sample-koko.jpg",
       "items": [
-        { "name": "반신", "nameJa": "半身", "price": "120,000원~", "priceJa": "12,000円〜" },
-        { "name": "전신", "nameJa": "全身", "price": "160,000원~", "priceJa": "16,000円〜" }
+        {
+          "name": "반신",
+          "nameJa": "半身",
+          "price": "120,000원~",
+          "priceJa": "12,000円〜"
+        },
+        {
+          "name": "전신",
+          "nameJa": "全身",
+          "price": "160,000원~",
+          "priceJa": "16,000円〜"
+        }
       ]
     },
     {
@@ -39,17 +74,57 @@
       "nameJa": "ロンロンタイプ・SDバーチャル",
       "image": "./data/images/sample-ronron.jpg",
       "items": [
-        { "name": "전신", "nameJa": "全身", "price": "80,000원~", "priceJa": "8,000円〜" }
+        {
+          "name": "전신",
+          "nameJa": "全身",
+          "price": "80,000원~",
+          "priceJa": "8,000円〜"
+        }
       ]
     }
   ],
   "options": [
-    { "name": "배경 추가", "nameJa": "背景追加", "price": "10,000원~", "priceJa": "1,000円〜" },
-    { "name": "소품 추가", "nameJa": "小物追加", "price": "5,000원~", "priceJa": "500円〜" },
-    { "name": "인물 추가", "nameJa": "人物追加", "price": "+50%", "priceJa": "+50%" },
-    { "name": "캐릭터 디자인", "nameJa": "キャラクターデザイン", "price": "30,000원~", "priceJa": "3,000円〜" },
-    { "name": "의상 디자인", "nameJa": "衣装デザイン", "price": "20,000원~", "priceJa": "2,000円〜" },
-    { "name": "빠른 마감", "nameJa": "特急仕上げ", "price": "20,000원~", "priceJa": "2,000円〜" },
-    { "name": "투명 배경 파일", "nameJa": "透過背景ファイル", "price": "5,000원~", "priceJa": "500円〜" }
+    {
+      "name": "배경 추가",
+      "nameJa": "背景追加",
+      "price": "10,000원~",
+      "priceJa": "1,000円〜"
+    },
+    {
+      "name": "소품 추가",
+      "nameJa": "小物追加",
+      "price": "5,000원~",
+      "priceJa": "500円〜"
+    },
+    {
+      "name": "인물 추가",
+      "nameJa": "人物追加",
+      "price": "+50%",
+      "priceJa": "+50%"
+    },
+    {
+      "name": "캐릭터 디자인",
+      "nameJa": "キャラクターデザイン",
+      "price": "30,000원~",
+      "priceJa": "3,000円〜"
+    },
+    {
+      "name": "의상 디자인",
+      "nameJa": "衣装デザイン",
+      "price": "20,000원~",
+      "priceJa": "2,000円〜"
+    },
+    {
+      "name": "빠른 마감",
+      "nameJa": "特急仕上げ",
+      "price": "20,000원~",
+      "priceJa": "2,000円〜"
+    },
+    {
+      "name": "투명 배경 파일",
+      "nameJa": "透過背景ファイル",
+      "price": "5,000원~",
+      "priceJa": "500円〜"
+    }
   ]
 }
