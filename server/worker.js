@@ -14,7 +14,7 @@
 //    /upload  {password, contentBase64}        → data/images/upload-*.jpg 커밋
 // ============================================================
 
-const OWNER = 'jxding-dev';
+const OWNER = 'koronri';
 const REPO = 'koronri';
 const BRANCH = 'main';
 const PRICING_PATH = 'data/pricing.json';

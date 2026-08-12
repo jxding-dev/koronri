@@ -11,7 +11,7 @@
 ## 무엇이 필요한가
 
 - Cloudflare 계정 (무료)
-- GitHub Fine-grained PAT (Repository: `jxding-dev/koronri`, Contents: Read/write)
+- GitHub Fine-grained PAT (Repository: `koronri/koronri`, Contents: Read/write)
 - 관리자에게 알려줄 비밀번호(자유롭게 정함)
 
 ## 배포 방법
@@ -53,7 +53,7 @@ var WORKER_URL = 'https://koronri-admin.<계정>.workers.dev'; // 배포한 Work
 > - **길고 추측 어려운 비밀번호**를 쓰세요(무작위 16자 이상 권장). 짧으면 무차별
 >   대입에 취약합니다.
 > - 원하면 출처를 좁힐 수 있습니다: `npx wrangler secret put ALLOWED_ORIGIN` 에
->   `https://jxding-dev.github.io` 를 넣으면 그 출처의 브라우저 요청만 CORS 허용됩니다.
+>   `https://koronri.github.io` 를 넣으면 그 출처의 브라우저 요청만 CORS 허용됩니다.
 >   (단, 서버-대-서버 호출은 CORS로 막히지 않으므로 근본 보호는 비밀번호 강도입니다.)
 
 ## 비밀번호·토큰 교체
